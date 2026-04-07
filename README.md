@@ -1,2 +1,1 @@
-A hangman game
-Going to use for AP CSP Create PT
+A hangman game for AP CSP Create PT
