@@ -1,15 +1,19 @@
-//Define global variables
-let word;
-let letters = 'abcdefghijklmnopqrstuvwxyz'
-let blanks = [];
-let lettersGuessed = [];
 //readline is a built-in Node.js library for reading console input
 //I learned how to use it with help from Claude AI
+const fs = require('fs');
 const readline = require('readline');
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
+
+//Define global variables
+let letters = 'abcdefghijklmnopqrstuvwxyz'
+let blanks = [];
+let lettersGuessed = [];
+let word;
+//wordList is using a list of the ~10,000 most searched words on google search
+const wordList = fs.readFileSync('wordlist-cleaned.txt', 'utf8').split('\n');
 
 //Calls the function startGame() to begin
 startGame();
@@ -79,38 +83,17 @@ function playAgain(){
     })
 }
 //Function to start the game
-//resets variables, asks host for a word/phrase
-//Called at the beginning of the program and by playAgain() if the player chooses to play again
-/* Includes multiple checks
-- word must only be letters and spaces
-- word must be longer than 0 characters
- */
+//resets variables, selects a random word from wordList
+
 function startGame(){
     blanks = [];
     lettersGuessed = [];
-    rl.question("Host, enter a word/phrase: ", (inputWord) => {
-        if (inputWord.length > 0) {
-            word = inputWord.toLowerCase().trim();
-            for (let i = 0; i < word.length; i++) {
-                if (word[i] === " "){
-                    blanks.push("   ");
-                } else{
-                    if (letters.includes(word[i].toLowerCase())){
-                        blanks.push("_");}
-                    else{
-                        console.log("Please input only letters and spaces");
-                        startGame();
-                        return;
-                    }
-                }
-            }
-            console.clear();
-            console.log(blanks.join(" "));
-            const startingLives = Math.round(word.replace(/ /g, '').length * 0.75);
-            askForLetter(startingLives);
-        } else {
-            console.log("Word must be longer than 0 characters!");
-            startGame();
-        }
-    });
+    word = wordList[Math.floor(Math.random() * wordList.length)].trim();
+    for (let i = 0; i < word.length; i++) {
+        blanks.push("_");
+    }
+    console.log("A word has been chosen!");
+    console.log(blanks.join(" "));
+    const startingLives = Math.round(word.length * 0.75);
+    askForLetter(startingLives);
 }
